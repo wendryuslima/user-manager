@@ -9,22 +9,22 @@ import (
 )
 
 var (
-	log *zap.Logger
+	log        *zap.Logger
 	LOG_OUTPUT = "LOG_OUTPUT"
-	LOG_LEVEL = "LOG_LEVEL"
+	LOG_LEVEL  = "LOG_LEVEL"
 )
 
 func init() {
 	logConfig := zap.Config{
-		OutputPaths:   []string{getOutputLogs()},
-		Level:         zap.NewAtomicLevelAt(getLevelLogs()),
-		Encoding:      "json",
+		OutputPaths: []string{getOutputLogs()},
+		Level:       zap.NewAtomicLevelAt(getLevelLogs()),
+		Encoding:    "json",
 		EncoderConfig: zapcore.EncoderConfig{
-			LevelKey: "level",
-			TimeKey: "time",
-			MessageKey: "message",
-			EncodeTime: zapcore.ISO8601TimeEncoder,
-			EncodeLevel: zapcore.LowercaseColorLevelEncoder,
+			LevelKey:     "level",
+			TimeKey:      "time",
+			MessageKey:   "message",
+			EncodeTime:   zapcore.ISO8601TimeEncoder,
+			EncodeLevel:  zapcore.LowercaseColorLevelEncoder,
 			EncodeCaller: zapcore.ShortCallerEncoder,
 		},
 	}
@@ -61,14 +61,10 @@ func getLevelLogs() zapcore.Level {
 		return zapcore.ErrorLevel
 
 	case "debug":
-	return zapcore.DebugLevel
+		return zapcore.DebugLevel
 
-	default: 
-	return zap.InfoLevel
+	default:
+		return zap.InfoLevel
 	}
-
-	
-
-	
 
 }

@@ -13,15 +13,14 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file: %v", err)
+		log.Fatalf("Error loading .env file: %v", err)
 	}
 	fmt.Println(os.Getenv("DB_HOST"))
 
 	router := gin.Default()
 
 	routes.InitRoutes(&router.RouterGroup)
-	router.Run(":8080")
-	if err := router.Run(); err != nil {
+	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}
 

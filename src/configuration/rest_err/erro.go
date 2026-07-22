@@ -32,7 +32,6 @@ func NewBadRequestError(message string) *RestErr {
 		Message: message,
 		Err:     "bad request",
 		Code:    http.StatusBadRequest,
-		
 	}
 }
 
