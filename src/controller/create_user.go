@@ -8,11 +8,11 @@ import (
 	"github.com/wendryuslima/user-manager/src/configuration/validation"
 	"github.com/wendryuslima/user-manager/src/controller/model/request"
 	"github.com/wendryuslima/user-manager/src/model"
-	"github.com/wendryuslima/user-manager/src/model/service"
+	"github.com/wendryuslima/user-manager/src/view"
 	"go.uber.org/zap"
 )
 
-func CreateUser(c *gin.Context) {
+func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 	logger.Info("Init Create controller",
 		zap.String("journey", "createUser"),
 	)
@@ -25,8 +25,8 @@ func CreateUser(c *gin.Context) {
 	}
 
 	domain := model.NewUserDomain(userRequest.Email, userRequest.Password, userRequest.Name, userRequest.Age)
-	userService := service.NewUserDomainService()
-	if err := userService.CreateUser(domain); err != nil {
+
+	if err := uc.service.CreateUser(domain); err != nil {
 		c.JSON(int(err.Code), err)
 		return
 	}
@@ -34,5 +34,5 @@ func CreateUser(c *gin.Context) {
 	logger.Info("User create succesfully",
 
 		zap.String("journey", "createUser"))
-	c.String(http.StatusOK, "")
+	c.JSON(http.StatusOK, view.ConvertDomainToResponse(domain))
 }
