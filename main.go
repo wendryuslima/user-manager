@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/wendryuslima/user-manager/src/configuration/database/mongodb"
 	"github.com/wendryuslima/user-manager/src/controller"
 	"github.com/wendryuslima/user-manager/src/controller/routes"
 	"github.com/wendryuslima/user-manager/src/model/service"
@@ -17,6 +18,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
+
+	mongodb.InitConnection()
 
 	fmt.Println(os.Getenv("DB_HOST"))
 	service := service.NewUserDomainService()
