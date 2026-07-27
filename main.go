@@ -19,7 +19,7 @@ func main() {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	mongodb.InitConnection()
+	mongodb.NewMongoDBConnection()
 
 	fmt.Println(os.Getenv("DB_HOST"))
 	service := service.NewUserDomainService()
