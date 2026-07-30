@@ -7,6 +7,8 @@ import (
 	"github.com/wendryuslima/user-manager/src/configuration/logger"
 	"github.com/wendryuslima/user-manager/src/configuration/rest_err"
 	"github.com/wendryuslima/user-manager/src/model"
+	"github.com/wendryuslima/user-manager/src/model/repository/entity/converter"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const (
@@ -19,17 +21,21 @@ func (ur *userRepository) CreateUser(userDomain model.UserDomainInterface) (mode
 
 	collection := ur.databaseConnection.Collection(collection_name)
 
-	value, err := userDomain.GetJsonValue()
-	if err != nil {
-		return nil, rest_err.NewInternalServerError(err.Error())
-	}
+	value := converter.ConverteDomainToEntity(userDomain)
+
 	result, err := collection.InsertOne(context.Background(), value)
 
 	if err != nil {
 		return nil, rest_err.NewInternalServerError(err.Error())
 	}
 
-	userDomain.SetID(result.InsertedID.(string))
+	insertedID, ok := result.InsertedID.(primitive.ObjectID)
+	if !ok {
+		return nil, rest_err.NewInternalServerError("invalid inserted ID type")
+	}
 
-	return userDomain, nil
+	value.ID = insertedID
+	userDomain.SetID(insertedID.Hex())
+
+	return converter.ConvertEntityToDomain(value), nil
 }
