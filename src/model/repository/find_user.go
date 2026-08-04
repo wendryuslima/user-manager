@@ -11,6 +11,7 @@ import (
 	"github.com/wendryuslima/user-manager/src/model/repository/entity"
 	"github.com/wendryuslima/user-manager/src/model/repository/entity/converter"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -47,8 +48,10 @@ func (ur *userRepository) FindUserByID(id string) (model.UserDomainInterface, *r
 	collection := ur.databaseConnection.Collection(collection_name)
 
 	userEntity := entity.UserEntity{}
-	filter := bson.D{{Key: "_id", Value: id}}
-	err := collection.FindOne(context.Background(), filter).Decode(&userEntity)
+	objectId, err := primitive.ObjectIDFromHex(id)
+	filter := bson.D{{Key: "_id", Value: objectId}}
+
+	err = collection.FindOne(context.Background(), filter).Decode(&userEntity)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			errorMessage := fmt.Sprintf("User not found with ID: %s", id)
