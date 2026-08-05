@@ -11,3 +11,7 @@ type UpdateUserRequest struct {
 	Name string `json:"name" binding:"omitempty,min=3,max=50"`
 	Age  int8   `json:"age" binding:"omitempty,min=18,max=150"`
 }
+
+type DeleteUserRequest struct {
+	ID string `json:"id" binding:"required"`
+}

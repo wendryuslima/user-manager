@@ -6,25 +6,20 @@ import (
 
 	"github.com/wendryuslima/user-manager/src/configuration/logger"
 	"github.com/wendryuslima/user-manager/src/configuration/rest_err"
-	"github.com/wendryuslima/user-manager/src/model"
-	"github.com/wendryuslima/user-manager/src/model/repository/entity/converter"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (ur *userRepository) UpdateUser(userId string, userDomain model.UserDomainInterface) *rest_err.RestErr {
-	logger.Info("Init updateUser repository")
+func (ur *userRepository) DeleteUser(userId string) *rest_err.RestErr {
+	logger.Info("Init deleteuser repository")
 	collection_name := os.Getenv(MONGODB_USER_COLLECTION)
 
 	collection := ur.databaseConnection.Collection(collection_name)
 
-	value := converter.ConverteDomainToEntity(userDomain)
 	userIdHex, _ := primitive.ObjectIDFromHex(userId)
 
 	filter := bson.D{{Key: "_id", Value: userIdHex}}
-	update := bson.D{{Key: "$set", Value: value}}
-
-	_, err := collection.UpdateOne(context.Background(), filter, update)
+	_, err := collection.DeleteOne(context.Background(), filter)
 
 	if err != nil {
 		return rest_err.NewInternalServerError(err.Error())

@@ -10,6 +10,7 @@ import (
 	"github.com/wendryuslima/user-manager/src/configuration/validation"
 	"github.com/wendryuslima/user-manager/src/controller/model/request"
 	"github.com/wendryuslima/user-manager/src/model"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/zap"
 )
 
@@ -18,13 +19,6 @@ func (uc *userControllerInterface) UpdateUser(c *gin.Context) {
 		"Init UpdateUser controller",
 		zap.String("journey", "updateUser"),
 	)
-
-	userID := strings.TrimSpace(c.Param("userId"))
-	if userID == "" {
-		restError := rest_err.NewBadRequestError("User ID is required")
-		c.JSON(int(restError.Code), restError)
-		return
-	}
 
 	var userRequest request.UpdateUserRequest
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
@@ -38,7 +32,12 @@ func (uc *userControllerInterface) UpdateUser(c *gin.Context) {
 		c.JSON(int(restError.Code), restError)
 		return
 	}
-
+	userID := strings.TrimSpace(c.Param("userId"))
+	if _, err := primitive.ObjectIDFromHex(userID); err != nil {
+		restError := rest_err.NewBadRequestError("invalid user ID")
+		c.JSON(int(restError.Code), restError)
+		return
+	}
 	domain := model.NewUserUpdateDomain(
 		"",
 		userID,

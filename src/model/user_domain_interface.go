@@ -34,3 +34,12 @@ func NewUserUpdateDomain(
 		age:  age,
 	}
 }
+
+func NewUserDeleteDomain(
+	id string,
+
+) UserDomainInterface {
+	return &userDomain{
+		id: id,
+	}
+}
